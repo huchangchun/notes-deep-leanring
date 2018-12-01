@@ -13,7 +13,7 @@ sess = tf.Session(config = config)
 mnist = input_data.read_data_sets('.\\data\\', one_hot=True)
 batch_size = tf.placeholder(tf.int32,[])
 
-lr = 1e-3
+lr = 1e-3 #0.001
 input_size = 28
 timestep_size = 28
 
@@ -54,15 +54,15 @@ with tf.variable_scope('RNN'):
         # 这里的state保存了每一层 LSTM 的状态
         (cell_output, state) = two_lstm_cell(input_data[:, timestep, :], state)
         outputs.append(cell_output)
-h_state = outputs[-1]
-
+h_state = outputs[-1] # h_state: 只取了outputs的最后一状态 <tf.Tensor 'RNN/RNN/multi_rnn_cell/cell_1_27/dropout/mul:0' shape=(?, 256) dtype=float32>]
+#lstm模型最终输出是最后一个时序的隐层维度，因此是256维，
 # LSTM 部分的输出会是一个 [hidden_size] 的tensor，我们要分类的话，还需要接一个 softmax 层
 out_W =tf.Variable(tf.truncated_normal(shape=[hidder_size,class_num],stddev=0.1),dtype=tf.float32)
 out_B = tf.Variable(tf.constant(0.1,shape=[class_num,]),dtype=tf.float32)
 y_pre = tf.nn.softmax(tf.matmul(h_state,out_W) + out_B) #matmul:矩阵相乘
-cross_entropy = -tf.reduce_mean(y *tf.log(y_pre))
+cross_entropy = -tf.reduce_mean(y *tf.log(y_pre)) #reduce表示降维1/0、分别表示横向纵向降维，不传则横纵都降维，_fun表示降维的方式，求和或求均值等
 train_op =tf.train.AdamOptimizer(lr).minimize(cross_entropy)
-correct_prediction = tf.equal(tf.argmax(y_pre,1),tf.argmax(y,1))
+correct_prediction = tf.equal(tf.argmax(y_pre,1),tf.argmax(y,1))#argmax取vector中最大值的索引号
 accuracy = tf.reduce_mean(tf.cast(correct_prediction,"float"))
 
 sess.run(tf.global_variables_initializer())
@@ -104,4 +104,3 @@ print("test accuracy :{0}".format(sess.run(accuracy,feed_dict={x:mnist.test.imag
                                            )
                                   )
       )
- 

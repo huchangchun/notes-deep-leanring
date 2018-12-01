@@ -44,13 +44,18 @@ def build_lstm(lstm_size, num_layers, batch_size, keep_prob):
     num_layers:lstm的隐层数目
     batch_size:batch size
     """
-    #构建一个基本lstm单元
-    lstm = tf.nn.rnn_cell.BasicLSTMCell(lstm_size)#512
-    #添加dropout
-    drop = tf.nn.rnn_cell.DropoutWrapper(lstm,keep_prob)
+    def lstm_cell(hidder_size):
+        return tf.contrib.rnn.BasicLSTMCell(num_units=hidder_size,state_is_tuple=True)
+    def dropout(hidder_size):
+        cell = lstm_cell(hidder_size)
+        return tf.contrib.rnn.DropoutWrapper(cell,output_keep_prob=keep_prob)
+    def multi_lstm(hidder_size,num_layers):
+        cells = [dropout(hidder_size) for _ in range(num_layers)]
+        MultiRNN_cell = tf.contrib.rnn.MultiRNNCell(cells,state_is_tuple=True)
+        return MultiRNN_cell
     
     #堆叠
-    cell = tf.nn.rnn_cell.MultiRNNCell([drop for _ in range(num_layers)])
+    cell = multi_lstm(lstm_size, num_layers)
 
     initial_state = cell.zero_state(batch_size, tf.float32)#
     
@@ -159,13 +164,19 @@ num_layers = 2
 learning_rate =0.001
 keep_prob = 0.5
 epochs = 20
+
 #每n轮进行一次变量保存
 save_every_n = 200
 model = CharRNN(len(vocab), batch_size=batch_size, num_steps=num_steps,
                 lstm_size=lstm_size, num_layers=num_layers, 
                 learning_rate=learning_rate)
 saver = tf.train.Saver(max_to_keep=100)
+tensorboard_dir = "./log_anna"
+if not os.path.exists(tensorboard_dir):
+    os.mkdir(tensorboard_dir)
+
 with tf.Session() as sess:
+    writer = tf.summary.FileWriter(tensorboard_dir,sess.graph) 
     sess.run(tf.global_variables_initializer())
     counter = 0
     for e in range(epochs):

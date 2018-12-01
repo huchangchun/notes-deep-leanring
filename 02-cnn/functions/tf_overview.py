@@ -1,3 +1,4 @@
+#coding:utf-8
 import tensorflow as tf
 ##two params
 #a = tf.constant(3.2)
@@ -20,9 +21,9 @@ Tensor("add:0", shape=(), dtype=float32)
 
 #-----------------------------------------
 """
-constant表示常量，创建后不能改变
-有时我们需要从外部输入数据，可以用tf.placeholder()
-创建占位Tensor,Tensor的值可以在运行的时候输入
+constant琛ㄧず甯搁噺锛屽垱寤哄悗涓嶈兘鏀瑰彉
+鏈夋椂鎴戜滑闇��浠庡�閮ㄨ緭鍏ユ暟鎹�紝鍙�互鐢╰f.placeholder()
+鍒涘缓鍗犱綅Tensor,Tensor鐨勫�鍙�互鍦ㄨ繍琛岀殑鏃跺�杈撳叆
 """
 #a = tf.placeholder(tf.float32)
 #b = tf.placeholder(tf.float32)
@@ -42,9 +43,9 @@ Tensor("add_1:0", dtype=float32)
 """
 
 """
-y=W×x+by=W×x+b  中，输入xx可以用占位 Tensor 表示，输出yy可以用线性模型的输出表示，
-我们需要不断的改变WW和bb的值，来找到一个使lossloss最小的值。
-这里WW和bb可以用变量 Tensor 表示。使用tf.Variable()可以创建一个变量 Tensor，如下就是我们模型的实现代码：
+y=W脳x+by=W脳x+b  涓�紝杈撳叆xx鍙�互鐢ㄥ崰浣�Tensor 琛ㄧず锛岃緭鍑簓y鍙�互鐢ㄧ嚎鎬фā鍨嬬殑杈撳嚭琛ㄧず锛�
+鎴戜滑闇��涓嶆柇鐨勬敼鍙榃W鍜宐b鐨勫�锛屾潵鎵惧埌涓�釜浣縧ossloss鏈�皬鐨勫�銆�
+杩欓噷WW鍜宐b鍙�互鐢ㄥ彉閲�Tensor 琛ㄧず銆備娇鐢╰f.Variable()鍙�互鍒涘缓涓�釜鍙橀噺 Tensor锛屽�涓嬪氨鏄�垜浠�ā鍨嬬殑瀹炵幇浠ｇ爜锛�
 
 """
 W = tf.Variable([1], dtype = tf.float32)
