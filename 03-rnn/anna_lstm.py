@@ -25,14 +25,14 @@ def get_batches(arr, n_seqs,n_steps):
 """
 包括输入层，LSTM层，输出层，loss ，optimizer
 """
-def build_inputs(num_seqs, num_steps):
+def build_inputs(batch_size, num_steps):
     """
     构建输入层
     num_steps:每个batch中的序列个数
     num_steps:每个序列包含的字符数
     """
-    inputs = tf.placeholder(tf.int32, shape=(num_seqs,num_steps),name = 'inputs')
-    targets = tf.placeholder(tf.int32, shape=(num_seqs, num_steps), name ='targets')
+    inputs = tf.placeholder(tf.int32, shape=(batch_size,num_steps),name = 'inputs')
+    targets = tf.placeholder(tf.int32, shape=(batch_size, num_steps), name ='targets')
     keep_prob = tf.placeholder(tf.float32, name='keep_prob')
     return inputs,targets,keep_prob
 
@@ -68,14 +68,14 @@ def build_output(lstm_output, in_size, out_size):
     out_size :softmax层的size
     """
     #将lstm的输出按照concate,例如[[1,2,3],[7,8,9]],concate为[1,2,3,7,8,9]
-    seq_output = tf.concat(lstm_output,1)
+    seq_output = tf.concat(lstm_output,1) #<tf.Tensor 'concat:0' shape=(100, 100, 512) dtype=float32>
  
-    #reshape
-    x = tf.reshape(seq_output, [-1,in_size])
+    #reshape  三维变两维
+    x = tf.reshape(seq_output, [-1,in_size])#<tf.Tensor 'Reshape:0' shape=(10000, 512) dtype=float32>
     
     #将lstm层与softmax层全连接
     with tf.variable_scope('softmax'):
-        softmax_w = tf.Variable(tf.truncated_normal([in_size, out_size],stddev=0.1))
+        softmax_w = tf.Variable(tf.truncated_normal([in_size, out_size],stddev=0.1)) #（512,83）
         softmax_b = tf.Variable(tf.zeros(out_size))
     #计算logits
     logits = tf.matmul(x, softmax_w) + softmax_b
@@ -181,7 +181,7 @@ with tf.Session() as sess:
     counter = 0
     for e in range(epochs):
         #train network
-        new_state = sess.ruN(model.initial_state)
+        new_state = sess.run(model.initial_state)
         loss = 0
         for x,y in get_batches(encoded,batch_size,num_steps):
             counter += 1

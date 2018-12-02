@@ -59,8 +59,10 @@ h_state = outputs[-1] # h_state: 只取了outputs的最后一状态 <tf.Tensor '
 # LSTM 部分的输出会是一个 [hidden_size] 的tensor，我们要分类的话，还需要接一个 softmax 层
 out_W =tf.Variable(tf.truncated_normal(shape=[hidder_size,class_num],stddev=0.1),dtype=tf.float32)
 out_B = tf.Variable(tf.constant(0.1,shape=[class_num,]),dtype=tf.float32)
-y_pre = tf.nn.softmax(tf.matmul(h_state,out_W) + out_B) #matmul:矩阵相乘
-cross_entropy = -tf.reduce_mean(y *tf.log(y_pre)) #reduce表示降维1/0、分别表示横向纵向降维，不传则横纵都降维，_fun表示降维的方式，求和或求均值等
+#y_pre = tf.nn.softmax(tf.matmul(h_state,out_W) + out_B) #matmul:矩阵相乘
+#cross_entropy = -tf.reduce_mean(y *tf.log(y_pre)) #reduce表示降维1/0、分别表示横向纵向降维，不传则横纵都降维，_fun表示降维的方式，求和或求均值等
+y_pre = tf.matmul(h_state, out_W) + out_B  
+cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=y, logits=y_pre))#使用tf提供的softmax交叉熵，准确率比上面的实现更高一点，logits必须是没有经过softmax层的，
 train_op =tf.train.AdamOptimizer(lr).minimize(cross_entropy)
 correct_prediction = tf.equal(tf.argmax(y_pre,1),tf.argmax(y,1))#argmax取vector中最大值的索引号
 accuracy = tf.reduce_mean(tf.cast(correct_prediction,"float"))
