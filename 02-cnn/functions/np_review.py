@@ -137,3 +137,24 @@ array([[ 58,  64],
        [139, 154]])]
 
 """
+
+"""
+14.one_hot
+"""
+x = np.array([1,2,3,5])
+one_hot = (x[...,None] == np.arange(np.max(x) + 1))
+print("x[...,None]\n",x[...,None])
+print("one_hot\n",one_hot)
+"""
+x[...,None]
+ [[1]
+ [2]
+ [3]
+ [5]]
+one_hot
+ [[False  True False False False False]
+ [False False  True False False False]
+ [False False False  True False False]
+ [False False False False False  True]]
+
+"""
