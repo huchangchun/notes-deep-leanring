@@ -14,7 +14,7 @@ concat_dim:必须是一个数，表明在哪一维上连接
 import tensorflow as tf
 t1 = tf.constant(-1.0, shape=[2, 3, 3])
 t3 = tf.constant(-2.0, shape=[2, 3, 3])
-#t1 = [[[1, 1, 1],[2, 2, 2]],[[3, 3, 3],[4, 4, 4]]]
+t5 = [[[1, 1, 1],[2, 2, 2]],[[3, 3, 3],[4, 4, 4]]]
 #t2 = [[[1, 1, 1],[2, 2, 2]],[[3, 3, 3],[4, 4, 4]]]
 #t3 = [[[5, 5],[6, 6]],[[7, 7],[8, 8]]]
 t4 = []
@@ -29,6 +29,7 @@ with tf.Session() as sess:
     print("shape:",sess.run(tf.shape(t1)))
     print("shape:",sess.run(tf.shape(t3)))
     print("shape:",sess.run(tf.shape(t4)))
+    print("t5_last", sess.run(t5[:,-1,:]))
     #t4c = tf.concat([t1,t3],-1)
     t4c = tf.stack([t1,t3],axis=-1)
     print(sess.run(t4c))

@@ -240,7 +240,7 @@ def sample(checkpoint, n_samples,lstm_size,vocab_size,prime="The "):
         saver.restore(sess,checkpoint)
         new_state = sess.run(model.initial_state)
         for c in prime:
-            x = np.zerors((1,1))
+            x = np.zeros((1,1))
             x[0,0] = vocab_to_int[c]
             feed = {model.inputs:x,
                     model.keep_prob:1,
